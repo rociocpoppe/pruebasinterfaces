@@ -10,6 +10,7 @@ tablero.width = casillero * 7;
 juego.height = 700;
 juego.width = 400;
 
+let mousedown=false;
 
 let tableroJuego = [];
 for(let i = 0; i < 7; i++){
@@ -38,7 +39,7 @@ tablerot.dibujarTablero();
 // }
 
 
-let ficha=new Ficha(0,0,35,1,ctxJuego);
+let ficha=new Ficha(40,40,35,1,ctxJuego);
 ficha.draw();
 
 
@@ -46,12 +47,8 @@ let fichas=[];
 fichas.push(ficha);
 fichas.push(ficha);
 
-
-
 function findClickedFigure(x,y){
     for(let i=0; i<fichas.length;i++){ 
-        // console.log("if" +x);
-        // console.log("if" +y);
         if(fichas[i].isPointInside(x,y)){
             return fichas[i];
         }
@@ -59,32 +56,48 @@ function findClickedFigure(x,y){
 }
 //findClickedFigure(x,y);
 
-let mousedown=false;
 let imgclickeada;
 function onMouseDown(e){
-    isMouseDown=true;
-    if(findClickedFigure(e.layerX,e.layerY)!=null){
-        //console.log(clickFig);
-        imgclickeada=findClickedFigure(e.layerX,e.layerY);
-        console.log(imgclickeada);
+    mousedown=true;
+    //console.log("mousedown");
+    let clicked=findClickedFigure(e.layerX,e.layerY);
+    if(clicked!=null){
+        imgclickeada=clicked;
+        imgclickeada=new Ficha(e.layerX,e.layerY,35,1,ctxJuego);
+        //console.log(imgclickeada);
     }
-    ficha.draw();
-    //console.log(imgclickeada);
+    imgclickeada.draw();
 }
-// function isMouseInside(event){
-//     for (var i = 0; i < fichas.length; i++) {
-//         if (fichas[i].x < event.clientX
-//           && (fichas[i].width + fichas[i].x > event.clientX)
-//           && fichas[i].y < event.clientY
-//           && (fichas[i].height + fichas[i].y > event.clientY)
-//         ) {
-//           objetoActual = fichas[i];
-//           inicioY = event.clientY - objetos[i].y;
-//           inicioX = event.clientX - objetos[i].x;
-//         }
-//       }
-//     return objetoActual,inicioX,inicioY;
-// }
 
+
+function onMouseMove(e){ 
+   // console.log("mousemove");
+    if(mousedown && imgclickeada){ 
+        clear();
+        imgclickeada=new Ficha(e.layerX,e.layerY,35,1,ctxJuego);
+        imgclickeada.draw();
+    }
+}
+
+function clear() {
+    ctxJuego.clearRect(0, 0, juego.width, juego.height);
+    ctxJuego.fillRect(200, 200, 0, 200);
+  }
+
+function oMousePos(canvas, e) {
+    var ClientRect = canvas.getBoundingClientRect();
+}
+
+function onMouseUp(e){
+    mousedown=false;
+}
+
+
+function onMouseEnter(){
+    console.log("entro a tablero");
+}
 juego.addEventListener("mousedown", onMouseDown);
+juego.addEventListener("mousemove", onMouseMove);
+juego.addEventListener("mouseup", onMouseUp);
+tablero.addEventListener("mouseenter", onMouseEnter);
 
